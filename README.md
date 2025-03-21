@@ -206,24 +206,43 @@ DeveloperEvaluation/
 │   │       │   └── CreateSaleItemResult.cs
 │   │       └── User/
 │   │           └── CreateUserResult.cs
-│   ├── DeveloperEvaluation.Domain/
-│   │   ├── Entities/
-│   │   │   ├── Sale.cs
-│   │   │   ├── SaleItem.cs
-│   │   │   ├── User.cs
-│   │   │   ├── Customer.cs
-│   │   │   └── Branch.cs
-│   │   ├── Interfaces/
-│   │   │   ├── ISale.cs
-│   │   │   ├── ISaleItem.cs
-│   │   │   ├── ISaleRepository.cs
-│   │   │   ├── ISaleItemRepository.cs
-│   │   │   └── IUserRepository.cs
-│   │   ├── Specifications/
-│   │   │   ├── ActiveUserSpecification.cs
-│   │   │   └── SaleTotalAboveSpecification.cs
-│   │   └── ValueObjects/
-│   │       └── Email.cs
+
+Ambev.DeveloperEvaluation.Domain/
+├── Common/
+│   └── EntityBase.cs
+├── Entities/
+│   ├── Branch.cs
+│   ├── Customer.cs
+│   ├── Product.cs
+│   ├── Sale.cs
+│   ├── SaleItem.cs
+│   └── User.cs
+├── Enums/
+│   ├── Role.cs
+│   └── Status.cs
+├── Events/
+│   ├── SaleCreatedEvent.cs
+│   └── SaleItemUpdatedEvent.cs
+├── Exceptions/
+│   ├── DomainException.cs
+│   ├── NotFoundException.cs
+│   └── ValidationException.cs
+├── Repositories/
+│   ├── ISaleRepository.cs
+│   ├── ISaleItemRepository.cs
+│   └── IUserRepository.cs
+├── Services/
+│   ├── ISaleDomainService.cs
+│   ├── IUserDomainService.cs
+│   └── SaleDomainService.cs
+├── Specifications/
+│   ├── ActiveUserSpecification.cs
+│   ├── HighValueSaleSpecification.cs
+│   └── SaleItemQuantitySpecification.cs
+├── Validation/
+│   ├── EmailValidator.cs
+│   ├── SaleValidator.cs
+│   └── UserValidator.cs
 │   └── DeveloperEvaluation.Infrastructure/
 │       ├── Configurations/
 │       │   ├── SaleConfiguration.cs
