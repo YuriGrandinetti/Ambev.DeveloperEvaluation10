@@ -1,3 +1,5 @@
+
+
 ## 🧠 Principais Padrões de Projeto Utilizados, conforme template fornecido
 
 O projeto implementa uma série de **padrões de design** para organizar melhor a lógica de negócio, facilitar os testes e desacoplar as dependências. Entre os principais, destacam-se:
