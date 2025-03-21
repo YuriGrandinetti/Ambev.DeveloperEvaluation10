@@ -1,3 +1,6 @@
+Criação do banco de das Tabelas no banco de Dados do Postgree
+
+```sql
 -- Remover o banco de dados "DeveloperEvaluation" caso já exista para evitar conflitos
 DROP DATABASE IF EXISTS "DeveloperEvaluation";
 
@@ -47,4 +50,23 @@ CREATE TABLE "Pedido" (
     CONSTRAINT fk_cliente
         FOREIGN KEY ("clienteId") REFERENCES "Cliente"("id"),
     CONSTRAINT fk_filial
-        FOREIGN KEY ("
+        FOREIGN KEY ("filialId") REFERENCES "Filial"("id")
+);
+
+-- Tabela ItensPedido: armazena os itens de cada pedido
+CREATE TABLE "ItensPedido" (
+    "id" SERIAL PRIMARY KEY,
+    "pedidoId" INTEGER NOT NULL,
+    "produtoId" INTEGER NOT NULL,
+    "quantidade" INTEGER NOT NULL,
+    "precoUnitario" NUMERIC(10,2) NOT NULL,
+    "descontoItem" NUMERIC(10,2) DEFAULT 0,
+    "valorTotalItem" NUMERIC(10,2) NOT NULL,
+    "cancelado" BOOLEAN NOT NULL DEFAULT FALSE,
+    CONSTRAINT fk_pedido
+        FOREIGN KEY ("pedidoId") REFERENCES "Pedido"("id"),
+    CONSTRAINT fk_produto
+        FOREIGN KEY ("produtoId") REFERENCES "Produto"("id")
+);
+```
+
