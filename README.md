@@ -260,6 +260,28 @@ Ambev.DeveloperEvaluation.Domain/
 │               ├── SaleRepository.cs
 │               ├── SaleItemRepository.cs
 │               └── UserRepository.cs
+Ambev.DeveloperEvaluation.Common/
+├── BusinessRules/
+│   ├── DiscountRules.cs
+│   ├── PricingRules.cs
+│   └── SaleBusinessRules.cs
+├── Exceptions/
+│   ├── ApplicationExceptionBase.cs
+│   ├── AuthenticationException.cs
+│   └── InvalidEntityException.cs
+├── HealthChecks/
+│   ├── DatabaseHealthCheck.cs
+│   └── MongoDbHealthCheck.cs
+├── Logging/
+│   ├── ILoggerAdapter.cs
+│   └── SerilogAdapter.cs
+├── Security/
+│   ├── ITokenService.cs
+│   ├── JwtTokenService.cs
+│   └── PasswordHasher.cs
+├── Validation/
+│   ├── FluentValidationExtensions.cs
+│   └── ValidationMessages.cs
 ├── tests/
 │   ├── DeveloperEvaluation.Unit/
 │   │   ├── Entities/
