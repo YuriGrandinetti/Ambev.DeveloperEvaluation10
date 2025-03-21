@@ -28,4 +28,9 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasMaxLength(20);
 
     }
+
+    
+
 }
+
+
