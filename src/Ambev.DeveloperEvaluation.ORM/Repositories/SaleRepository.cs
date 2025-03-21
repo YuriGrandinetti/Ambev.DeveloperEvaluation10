@@ -22,9 +22,10 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
             await _context.SaveChangesAsync();
         }
 
-      
-
-       
+        public Task AddAsync(Sale sale, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
 
         public async Task<IEnumerable<Sale>> GetAllAsync()
         {

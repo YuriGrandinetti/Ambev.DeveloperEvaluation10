@@ -7,8 +7,10 @@ using Ambev.DeveloperEvaluation.Common.BusinessRules;
 using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Domain.Events;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
+using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
 {
@@ -17,13 +19,23 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
         private readonly ISaleRepository _saleRepository;
         private readonly IMediator _mediator;
         private readonly ILogger<CreateSaleCommandHandler> _logger;
+        private readonly IMapper _mapper;
 
         public CreateSaleCommandHandler(ISaleRepository saleRepository, IMediator mediator, ILogger<CreateSaleCommandHandler> logger)
         {
             _saleRepository = saleRepository;
             _mediator = mediator;
-            _logger = logger;
+            _logger = logger ;
         }
+
+        public CreateSaleCommandHandler(ISaleRepository saleRepository, IMapper mapper, ILogger<CreateSaleCommandHandler> logger = null)
+        {
+            _saleRepository = saleRepository;
+            _mapper = mapper;
+            _logger = logger ?? NullLogger<CreateSaleCommandHandler>.Instance;
+        }
+
+
 
         public async Task<CreateSaleResult> Handle(CreateSaleCommand request, CancellationToken cancellationToken)
         {
@@ -37,13 +49,14 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
                 ValorTotalVenda = request.ValorTotalVenda,
                 Itens = request.Itens.Select(item => new SaleItem
                 {
+                    SaleId = item.SaleId, // Atribui o Id da venda a cada item
                     ProductId = item.ProductId,
                     Quantidade = item.Quantidade,
                     PrecoUnitario = item.PrecoUnitario,
                     DescontoItem = SaleBusinessRules.CalculateDiscount(item.Quantidade, item.PrecoUnitario, item.Quantidade * item.PrecoUnitario),
                     ValorTotalItem = item.ValorTotalItem,
                     Cancelado = item.Cancelado,
-                    SaleId = item.SaleId, // Atribui o Id da venda a cada item
+                   
                   //  Sale = item.Sale     // (Opcional) Define a propriedade de navegação para a venda
 
                 }).ToList()

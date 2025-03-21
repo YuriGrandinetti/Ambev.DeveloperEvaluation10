@@ -11,7 +11,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
 {
     public class CreateSaleCommand : IRequest<CreateSaleResult>
     {
-        public required string NumeroVenda { get; set; }
+        public  string NumeroVenda { get; set; } = string.Empty;
         public DateTime DataVenda { get; set; }
         public int CustomerId { get; set; }
         public int BranchId { get; set; }
