@@ -282,6 +282,14 @@ Ambev.DeveloperEvaluation.Common/
 ├── Validation/
 │   ├── FluentValidationExtensions.cs
 │   └── ValidationMessages.cs
+
+Ambev.DeveloperEvaluation.IoC/
+├── ModuleInitializers/
+│   ├── ApplicationModule.cs
+│   ├── DomainModule.cs
+│   ├── InfrastructureModule.cs
+│   ├── MongoDbModule.cs
+│   └── WebApiModule.cs
 ├── tests/
 │   ├── DeveloperEvaluation.Unit/
 │   │   ├── Entities/
