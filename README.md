@@ -1,3 +1,29 @@
+## 🧠 Principais Padrões de Projeto Utilizados, conforme template fornecido
+
+O projeto implementa uma série de **padrões de design** para organizar melhor a lógica de negócio, facilitar os testes e desacoplar as dependências. Entre os principais, destacam-se:
+
+###  Command Pattern
+As operações de criação (por exemplo, `CreateSaleCommand` e seu handler) encapsulam a intenção de realizar uma ação, separando a solicitação da execução.
+
+###  Mediator Pattern
+O uso de `IMediator` nos handlers desacopla a comunicação entre os componentes, permitindo que comandos e eventos sejam processados de forma centralizada.
+
+### Repository Pattern
+Interfaces como `ISaleRepository` abstraem o acesso aos dados, facilitando a persistência e o teste da lógica de negócio sem depender de implementações concretas.
+
+### ✅ Specification Pattern
+Padrão aplicado para encapsular regras de negócio – como visto nas classes de especificação (ex.: `ActiveUserSpecification`) –, permitindo validar condições complexas de forma reutilizável.
+
+### ✅ Test Data Builder Pattern
+As classes de TestData (como `CreateSaleHandlerTestData`, `SaleTestData`, `UserTestData` etc.) centralizam a criação de dados de teste, garantindo cenários consistentes e facilitando a manutenção dos testes.
+
+### ✅ Null Object Pattern
+Utilizado no tratamento do logger (por exemplo, através do `NullLogger<T>`) para evitar a necessidade de verificações nulas e simplificar a injeção de dependências.
+
+### ✅ Dependency Injection (DI)
+A injeção de dependências (por meio dos construtores) desacopla as implementações dos consumidores, tornando o sistema mais flexível e testável.
+
+
 Criação do banco de das Tabelas no banco de Dados do Postgree
 
 ```sql
