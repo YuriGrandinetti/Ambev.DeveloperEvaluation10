@@ -123,7 +123,7 @@ Uso de construtores para injetar dependências e promover desacoplamento.
 Encapsula a intenção de realizar uma ação (ex: `CreateSaleCommand`) separando responsabilidade da execução.
 
 ### ✅ Mediator Pattern
-Comunicacão entre componentes feita via `IMediator`, reduzindo acoplamento.
+Comunicação entre componentes feita via `IMediator`, reduzindo acoplamento.
 
 ### ✅ Repository Pattern
 Interfaces como `ISaleRepository` isolam o acesso a dados da lógica de negócio.
@@ -135,7 +135,7 @@ Regras complexas encapsuladas em especificações reutilizáveis (ex: `ActiveUse
 Classes auxiliares como `SaleTestData` e `UserTestData` geram cenários de teste de forma organizada.
 
 ### ✅ Null Object Pattern
-Uso de `NullLogger<T>` evita verificacões nulas e facilita testes.
+Uso de `NullLogger<T>` evita verificações nulas e facilita testes.
 
 ### ✅ Dependency Injection
 Aplicada via construtor, melhora testabilidade e desacoplamento de componentes.
@@ -157,18 +157,116 @@ dotnet test
 
 ---
 
-## 📁 Estrutura de Pastas
+## 📁 Estrutura de Pastas (Aprofundada)
 
-```text
-├── src
-│   ├── DeveloperEvaluation.Api
-│   ├── DeveloperEvaluation.Application
-│   ├── DeveloperEvaluation.Domain
-│   └── DeveloperEvaluation.Infrastructure
-├── tests
-│   ├── DeveloperEvaluation.Unit
-│   └── DeveloperEvaluation.Integration (se houver)
-└── README.md
+```texttext
+DeveloperEvaluation/
+├── src/
+│   ├── DeveloperEvaluation.Api/
+│   │   ├── Controllers/
+│   │   │   ├── SaleController.cs
+│   │   │   ├── SaleItemController.cs
+│   │   │   └── UserController.cs
+│   │   ├── Middleware/
+│   │   │   └── ExceptionHandlingMiddleware.cs
+│   │   ├── Extensions/
+│   │   │   └── DependencyInjectionExtensions.cs
+│   │   ├── Program.cs
+│   │   ├── appsettings.json
+│   │   └── appsettings.Development.json
+│   ├── DeveloperEvaluation.Application/
+│   │   ├── Commands/
+│   │   │   ├── Sale/
+│   │   │   │   ├── CreateSaleCommand.cs
+│   │   │   │   ├── DeleteSaleCommand.cs
+│   │   │   │   └── UpdateSaleCommand.cs
+│   │   │   ├── SaleItem/
+│   │   │   │   ├── CreateSaleItemCommand.cs
+│   │   │   │   └── DeleteSaleItemCommand.cs
+│   │   │   └── User/
+│   │   │       └── CreateUserCommand.cs
+│   │   ├── Handlers/
+│   │   │   ├── Sale/
+│   │   │   │   └── CreateSaleCommandHandler.cs
+│   │   │   ├── SaleItem/
+│   │   │   │   └── CreateSaleItemCommandHandler.cs
+│   │   │   └── User/
+│   │   │       └── CreateUserCommandHandler.cs
+│   │   ├── Validators/
+│   │   │   ├── Sale/
+│   │   │   │   └── CreateSaleValidator.cs
+│   │   │   ├── SaleItem/
+│   │   │   │   └── CreateSaleItemValidator.cs
+│   │   │   └── User/
+│   │   │       └── CreateUserValidator.cs
+│   │   └── Results/
+│   │       ├── Sale/
+│   │       │   └── CreateSaleResult.cs
+│   │       ├── SaleItem/
+│   │       │   └── CreateSaleItemResult.cs
+│   │       └── User/
+│   │           └── CreateUserResult.cs
+│   ├── DeveloperEvaluation.Domain/
+│   │   ├── Entities/
+│   │   │   ├── Sale.cs
+│   │   │   ├── SaleItem.cs
+│   │   │   ├── User.cs
+│   │   │   ├── Customer.cs
+│   │   │   └── Branch.cs
+│   │   ├── Interfaces/
+│   │   │   ├── ISale.cs
+│   │   │   ├── ISaleItem.cs
+│   │   │   ├── ISaleRepository.cs
+│   │   │   ├── ISaleItemRepository.cs
+│   │   │   └── IUserRepository.cs
+│   │   ├── Specifications/
+│   │   │   ├── ActiveUserSpecification.cs
+│   │   │   └── SaleTotalAboveSpecification.cs
+│   │   └── ValueObjects/
+│   │       └── Email.cs
+│   └── DeveloperEvaluation.Infrastructure/
+│       ├── Configurations/
+│       │   ├── SaleConfiguration.cs
+│       │   ├── SaleItemConfiguration.cs
+│       │   └── UserConfiguration.cs
+│       ├── Logging/
+│       │   └── LoggerAdapter.cs
+│       └── Persistence/
+│           ├── Context/
+│           │   └── ApplicationDbContext.cs
+│           ├── Migrations/
+│           │   ├── 20240301_InitialCreate.cs
+│           │   └── ApplicationDbContextModelSnapshot.cs
+│           └── Repositories/
+│               ├── SaleRepository.cs
+│               ├── SaleItemRepository.cs
+│               └── UserRepository.cs
+├── tests/
+│   ├── DeveloperEvaluation.Unit/
+│   │   ├── Entities/
+│   │   │   ├── SaleTests.cs
+│   │   │   ├── SaleItemTests.cs
+│   │   │   └── UserTests.cs
+│   │   ├── Handlers/
+│   │   │   ├── Sale/
+│   │   │   │   ├── CreateSaleCommandHandlerTests.cs
+│   │   │   │   └── CreateSaleHandlerTestData.cs
+│   │   │   └── User/
+│   │   │       ├── CreateUserCommandHandlerTests.cs
+│   │   │       └── CreateUserHandlerTestData.cs
+│   │   ├── Specifications/
+│   │   │   └── ActiveUserSpecificationTests.cs
+│   │   ├── Validators/
+│   │   │   ├── EmailValidatorTests.cs
+│   │   │   └── UserValidatorTests.cs
+│   │   └── TestData/
+│   │       ├── SaleTestData.cs
+│   │       └── UserTestData.cs
+│   └── DeveloperEvaluation.Integration/  (opcional)
+├── README.md
+├── .editorconfig
+├── .gitignore
+└── .gitlab-ci.yml
 ```
 
 ---
