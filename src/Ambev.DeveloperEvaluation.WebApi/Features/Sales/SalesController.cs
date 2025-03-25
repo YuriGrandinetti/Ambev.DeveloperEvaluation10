@@ -121,5 +121,7 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales
                 Message = "User deleted successfully"
             });
         }
+
+
     }
 }

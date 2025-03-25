@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
-
+using Ambev.DeveloperEvaluation.Common.DTOs;
+using Ambev.DeveloperEvaluation.Common;
+//using System.Linq.Dynamic.Core;
+//using Ambev.DeveloperEvaluation.WebApi.Features.Sales.DTOs;
 namespace Ambev.DeveloperEvaluation.ORM.Repositories
 {
     public class SaleRepository : ISaleRepository
@@ -27,7 +30,7 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<Sale>> GetAllAsync()
+        public async Task<IEnumerable<Sale>> GetAllAsync(CancellationToken cancellationToken = default)
         {
             return await _context.Pedido
                .Include(s => s.Itens)
@@ -46,6 +49,11 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
             throw new NotImplementedException();
         }
 
+        //public Task<IEnumerable<GetSaleItensResponse>> GetSalesWithProjectionAsync(DateTime dataInicial, DateTime dataFinal, CancellationToken cancellationToken = default)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
         public async Task UpdateAsync(Sale sale)
         {
             _context.Pedido.Update(sale);
@@ -63,5 +71,63 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
             }
             return false;
         }
+
+        
+        public async Task<PagedResult<GetSaleItensResponse>> GetSalesWithProjectionAsync(
+           DateTime dataInicial,
+           DateTime dataFinal,
+           int page = 1,
+           int size = 10,
+           string order = "dataVenda asc",
+           CancellationToken cancellationToken = default)
+        {
+            // Inicia a query base, incluindo os itens da venda
+            var query = _context.Pedido
+                .Include(s => s.Itens)
+                .AsQueryable();
+
+            // Aplica o filtro pelo intervalo de datas
+            query = query.Where(s => s.DataVenda >= dataInicial && s.DataVenda <= dataFinal);
+
+            // Ordenação simples por DataVenda (pode ser aprimorada para interpretar o parâmetro "order")
+            query = query.OrderBy(s => s.DataVenda);
+
+            // Conta o total de registros antes de aplicar a paginação
+            var totalCount = await query.CountAsync(cancellationToken);
+
+            // Aplica paginação e projeta o resultado para os DTOs
+            var sales = await query.Skip((page - 1) * size)
+                .Take(size)
+                .Select(s => new GetSaleItensResponse
+                {
+                    Id = s.Id,
+                    NumeroVenda = s.NumeroVenda,
+                    DataVenda = s.DataVenda,
+                    ClienteId = s.CustomerId,
+                    ValorTotalVenda = s.ValorTotalVenda,
+                    FilialId = s.BranchId,
+                    Itens = s.Itens.Select(i => new GetSaleItemResponse
+                    {
+                        Id = i.Id,
+                        ProdutoId = i.ProductId,
+                        Quantidade = i.Quantidade,
+                        PrecoUnitario = i.PrecoUnitario,
+                        DescontoItem = i.DescontoItem,
+                        ValorTotalItem = i.ValorTotalItem,
+                        Cancelado = i.Cancelado
+                    }).ToList()
+                })
+                .ToListAsync(cancellationToken);
+
+            // Retorna o resultado paginado
+            return new PagedResult<GetSaleItensResponse>
+            {
+                Page = page,
+                Size = size,
+                Total = totalCount,
+                Data = sales
+            };
+        }
+
     }
 }

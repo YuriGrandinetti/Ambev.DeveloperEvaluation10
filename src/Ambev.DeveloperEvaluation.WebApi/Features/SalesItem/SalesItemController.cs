@@ -8,6 +8,11 @@ using Ambev.DeveloperEvaluation.WebApi.Features.SalesItem.DeleteSaleItem;
 using Ambev.DeveloperEvaluation.Application.SaleItens.CreateSaleItem;
 using Ambev.DeveloperEvaluation.Application.SaleItens.GetSaleItem;
 using Ambev.DeveloperEvaluation.Application.SaleItens.DeleteSaleItem;
+using Ambev.DeveloperEvaluation.Domain.Repositories;
+using Ambev.DeveloperEvaluation.ORM.Repositories;
+using Ambev.DeveloperEvaluation.Common;
+using Ambev.DeveloperEvaluation.Common.DTOs;
+
 
 
 namespace Ambev.DeveloperEvaluation.WebApi.Features.SalesItem
@@ -21,9 +26,11 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.SalesItem
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
+        private readonly ISaleRepository _saleRepository;
 
-        public SalesItemController(IMediator mediator, IMapper mapper)
+        public SalesItemController(IMediator mediator, IMapper mapper, ISaleRepository saleRepository)
         {
+            _saleRepository = saleRepository;
             _mediator = mediator;
             _mapper = mapper;
         }
@@ -63,7 +70,7 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.SalesItem
         /// <param name="cancellationToken">Token de cancelamento.</param>
         /// <returns>Detalhes do item de venda, se encontrado.</returns>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(ApiResponseWithData<GetSaleItemResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseWithData<DeveloperEvaluation.Common.DTOs.GetSaleItemResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetSaleItem([FromRoute] int id, CancellationToken cancellationToken)
@@ -78,11 +85,11 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.SalesItem
             var command = _mapper.Map<GetSaleItemCommand>(request.Id);
             var response = await _mediator.Send(command, cancellationToken);
 
-            return Ok(new ApiResponseWithData<GetSaleItemResponse>
+            return Ok(new ApiResponseWithData<DeveloperEvaluation.Common.DTOs.GetSaleItemResponse>
             {
                 Success = true,
                 Message = "Item de venda recuperado com sucesso",
-                Data = _mapper.Map<GetSaleItemResponse>(response)
+                Data = _mapper.Map<DeveloperEvaluation.Common.DTOs.GetSaleItemResponse>(response)
             });
         }
 
@@ -114,5 +121,47 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.SalesItem
                 Message = "Item de venda deletado com sucesso"
             });
         }
+
+        /// <summary>
+        /// Recupera a lista de todas as vendas com seus itens, com paginação, ordenação e filtro por período de data.
+        /// </summary>
+        /// <param name="page">Número da página (default: 1)</param>
+        /// <param name="size">Número de itens por página (default: 10)</param>
+        /// <param name="order">Ordenação dos resultados (ex.: "dataVenda asc, clienteId desc")</param>
+        /// <param name="dataInicial">Data inicial para filtrar as vendas (obrigatória)</param>
+        /// <param name="dataFinal">Data final para filtrar as vendas (obrigatória)</param>
+        /// <param name="cancellationToken">Token para cancelamento da requisição</param>
+        /// <returns>Uma lista paginada de vendas e seus itens</returns>
+        [HttpGet]
+        [ProducesResponseType(typeof(ApiResponseWithData<PagedResult<GetSaleItensResponse>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetSalesItens(
+    [FromQuery(Name = "_page")] int page = 1,
+    [FromQuery(Name = "_size")] int size = 10,
+    [FromQuery(Name = "_order")] string order = "dataVenda asc, clienteId desc",
+    [FromQuery] DateTime? dataInicial = null,
+    [FromQuery] DateTime? dataFinal = null,
+    CancellationToken cancellationToken = default)
+        {
+            // Define valores padrão se o chamador não forneceu as datas
+            dataInicial ??= DateTime.Today.AddDays(-1);
+            dataFinal ??= DateTime.Today;
+
+            // Chama o método GetSalesWithProjectionAsync para realizar filtragem, ordenação e paginação
+            var pagedResult = await _saleRepository.GetSalesWithProjectionAsync(
+                dataInicial.Value,
+                dataFinal.Value,
+                page,
+                size,
+                order,
+                cancellationToken);
+
+            return Ok(new ApiResponseWithData<PagedResult<GetSaleItensResponse>>
+            {
+                Success = true,
+                Message = "Vendas e itens recuperados com sucesso.",
+                Data = pagedResult
+            });
+        }
+
     }
 }
