@@ -11,6 +11,7 @@ using Ambev.DeveloperEvaluation.Application.SaleItens.CreateSaleItem;
 using Ambev.DeveloperEvaluation.Application.SaleItens.GetSaleItem;
 using Ambev.DeveloperEvaluation.Application.SaleItens.DeleteSaleItem;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Threading;
 using System.Threading.Tasks;
 using System;
@@ -42,6 +43,9 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.SalesItem
         /// <param name="cancellationToken">Token de cancelamento.</param>
         /// <returns>Detalhes do item de venda criado.</returns>
         [HttpPost("create")]
+        [SwaggerOperation(
+                Summary = "Cria um novo item de venda",
+                Description = "Use este endpoint para registrar um item de venda em um pedido existente.")]
         [ProducesResponseType(typeof(ApiResponseWithData<CreateSaleItemResponse>), 201)]
         [ProducesResponseType(typeof(ApiResponse), 400)]
         public async Task<IActionResult> CreateSaleItem([FromBody] CreateSaleItemRequest request, CancellationToken cancellationToken)
@@ -69,6 +73,9 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.SalesItem
         /// <param name="cancellationToken">Token de cancelamento.</param>
         /// <returns>Detalhes do item de venda, se encontrado.</returns>
         [HttpGet("{id}")]
+        [SwaggerOperation(
+                Summary = "Obtem um item de venda pelo seu id",
+                Description = "Use este endpoint para obter um item de venda em um pedido existente.")]
         [ProducesResponseType(typeof(ApiResponseWithData<DeveloperEvaluation.Common.DTOs.GetSaleItemResponse>), 200)]
         [ProducesResponseType(typeof(ApiResponse), 400)]
         [ProducesResponseType(typeof(ApiResponse), 404)]
@@ -98,6 +105,9 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.SalesItem
         /// <param name="cancellationToken">Token de cancelamento.</param>
         /// <returns>Mensagem de sucesso se o item for deletado.</returns>
         [HttpDelete("{id}")]
+        [SwaggerOperation(
+                Summary = "Deleta  um item de venda",
+                Description = "Use este endpoint para deletar um item de venda em um pedido existente.")]
         [ProducesResponseType(typeof(ApiResponse), 200)]
         [ProducesResponseType(typeof(ApiResponse), 400)]
         [ProducesResponseType(typeof(ApiResponse), 404)]
@@ -130,6 +140,9 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.SalesItem
         /// <param name="cancellationToken">Token para cancelamento da requisição</param>
         /// <returns>Uma lista paginada de vendas e seus itens</returns>
         [HttpGet("projection")]
+        [SwaggerOperation(
+                Summary = "Lista todos os pedidos e seus itens por um período",
+                Description = "Use este endpoint Lista todos os pedidos e seus itens por um período.")]
         [ProducesResponseType(typeof(ApiResponseWithData<PagedResult<GetSaleItensResponse>>), 200)]
         public async Task<IActionResult> GetSalesItens(
             [FromQuery(Name = "_page")] int page = 1,

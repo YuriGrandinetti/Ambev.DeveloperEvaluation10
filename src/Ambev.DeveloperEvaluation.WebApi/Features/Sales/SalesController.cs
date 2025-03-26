@@ -15,6 +15,7 @@ using Ambev.DeveloperEvaluation.Application.Users.GetUser;
 using Ambev.DeveloperEvaluation.WebApi.Features.Users.CreateUser;
 using Ambev.DeveloperEvaluation.WebApi.Features.Users.DeleteUser;
 using Ambev.DeveloperEvaluation.WebApi.Features.Users.GetUser;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales
 {
@@ -42,6 +43,9 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>The created user details</returns>
         [HttpPost]
+        [SwaggerOperation(
+                Summary = "Cria um novo Pedido de venda",
+                Description = "Use este endpoint para registrar um pedido de venda.")]
         [ProducesResponseType(typeof(ApiResponseWithData<CreateSaleResponse>), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateSale([FromBody] CreateSaleRequest request, CancellationToken cancellationToken)
@@ -70,6 +74,9 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>The user details if found</returns>
         [HttpGet("{id}")]
+        [SwaggerOperation(
+                Summary = "Obtem um  Pedido de venda",
+                Description = "Use este endpoint para obter um pedido de venda.")]
         [ProducesResponseType(typeof(ApiResponseWithData<GetSaleResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
@@ -100,6 +107,9 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Success response if the user was deleted</returns>
         [HttpDelete("{id}")]
+        [SwaggerOperation(
+                Summary = "Deletar um novo Pedido de venda",
+                Description = "Use este endpoint para deletar um pedido de venda.")]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
@@ -118,7 +128,7 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales
             return Ok(new ApiResponse
             {
                 Success = true,
-                Message = "User deleted successfully"
+                Message = "Pedido deleted successfully"
             });
         }
 
