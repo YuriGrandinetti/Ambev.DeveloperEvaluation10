@@ -28,12 +28,12 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
             _logger = logger ;
         }
 
-        public CreateSaleCommandHandler(ISaleRepository saleRepository, IMapper mapper, ILogger<CreateSaleCommandHandler> logger = null)
-        {
-            _saleRepository = saleRepository;
-            _mapper = mapper;
-            _logger = logger ?? NullLogger<CreateSaleCommandHandler>.Instance;
-        }
+        //public CreateSaleCommandHandler(ISaleRepository saleRepository, IMapper mapper, ILogger<CreateSaleCommandHandler> logger = null)
+        //{
+        //    _saleRepository = saleRepository;
+        //    _mapper = mapper;
+        //    _logger = logger ?? NullLogger<CreateSaleCommandHandler>.Instance;
+        //}
 
 
 

@@ -2,6 +2,8 @@
 using MediatR;
 using AutoMapper;
 using Ambev.DeveloperEvaluation.WebApi.Common;
+using Ambev.DeveloperEvaluation.Common;
+using Ambev.DeveloperEvaluation.Common.DTOs; // DTOs compartilhados
 using Ambev.DeveloperEvaluation.WebApi.Features.SalesItem.CreateSaleItem;
 using Ambev.DeveloperEvaluation.WebApi.Features.SalesItem.GetSaleItem;
 using Ambev.DeveloperEvaluation.WebApi.Features.SalesItem.DeleteSaleItem;
@@ -9,16 +11,14 @@ using Ambev.DeveloperEvaluation.Application.SaleItens.CreateSaleItem;
 using Ambev.DeveloperEvaluation.Application.SaleItens.GetSaleItem;
 using Ambev.DeveloperEvaluation.Application.SaleItens.DeleteSaleItem;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
-using Ambev.DeveloperEvaluation.ORM.Repositories;
-using Ambev.DeveloperEvaluation.Common;
-using Ambev.DeveloperEvaluation.Common.DTOs;
-
-
+using System.Threading;
+using System.Threading.Tasks;
+using System;
 
 namespace Ambev.DeveloperEvaluation.WebApi.Features.SalesItem
 {
     /// <summary>
-    /// Controller para gerenciar operações relacionadas aos itens de venda (SaleItem).
+    /// Controller para gerenciar operações relacionadas aos itens de venda.
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
@@ -41,14 +41,13 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.SalesItem
         /// <param name="request">A requisição para criação do item de venda.</param>
         /// <param name="cancellationToken">Token de cancelamento.</param>
         /// <returns>Detalhes do item de venda criado.</returns>
-        [HttpPost]
-        [ProducesResponseType(typeof(ApiResponseWithData<CreateSaleItemResponse>), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [HttpPost("create")]
+        [ProducesResponseType(typeof(ApiResponseWithData<CreateSaleItemResponse>), 201)]
+        [ProducesResponseType(typeof(ApiResponse), 400)]
         public async Task<IActionResult> CreateSaleItem([FromBody] CreateSaleItemRequest request, CancellationToken cancellationToken)
         {
             var validator = new CreateSaleItemRequestValidator();
             var validationResult = await validator.ValidateAsync(request, cancellationToken);
-
             if (!validationResult.IsValid)
                 return BadRequest(validationResult.Errors);
 
@@ -64,21 +63,20 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.SalesItem
         }
 
         /// <summary>
-        /// Obtém um item de venda pelo seu ID.
+        /// Recupera um item de venda pelo seu ID.
         /// </summary>
         /// <param name="id">O identificador único do item de venda.</param>
         /// <param name="cancellationToken">Token de cancelamento.</param>
         /// <returns>Detalhes do item de venda, se encontrado.</returns>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(ApiResponseWithData<DeveloperEvaluation.Common.DTOs.GetSaleItemResponse>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiResponseWithData<DeveloperEvaluation.Common.DTOs.GetSaleItemResponse>), 200)]
+        [ProducesResponseType(typeof(ApiResponse), 400)]
+        [ProducesResponseType(typeof(ApiResponse), 404)]
         public async Task<IActionResult> GetSaleItem([FromRoute] int id, CancellationToken cancellationToken)
         {
             var request = new GetSaleItemRequest { Id = id };
             var validator = new GetSaleItemRequestValidator();
             var validationResult = await validator.ValidateAsync(request, cancellationToken);
-
             if (!validationResult.IsValid)
                 return BadRequest(validationResult.Errors);
 
@@ -100,15 +98,14 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.SalesItem
         /// <param name="cancellationToken">Token de cancelamento.</param>
         /// <returns>Mensagem de sucesso se o item for deletado.</returns>
         [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiResponse), 200)]
+        [ProducesResponseType(typeof(ApiResponse), 400)]
+        [ProducesResponseType(typeof(ApiResponse), 404)]
         public async Task<IActionResult> DeleteSaleItem([FromRoute] int id, CancellationToken cancellationToken)
         {
             var request = new DeleteSaleItemRequest { Id = id };
             var validator = new DeleteSaleItemRequestValidator();
             var validationResult = await validator.ValidateAsync(request, cancellationToken);
-
             if (!validationResult.IsValid)
                 return BadRequest(validationResult.Errors);
 
@@ -132,21 +129,21 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.SalesItem
         /// <param name="dataFinal">Data final para filtrar as vendas (obrigatória)</param>
         /// <param name="cancellationToken">Token para cancelamento da requisição</param>
         /// <returns>Uma lista paginada de vendas e seus itens</returns>
-        [HttpGet]
-        [ProducesResponseType(typeof(ApiResponseWithData<PagedResult<GetSaleItensResponse>>), StatusCodes.Status200OK)]
+        [HttpGet("projection")]
+        [ProducesResponseType(typeof(ApiResponseWithData<PagedResult<GetSaleItensResponse>>), 200)]
         public async Task<IActionResult> GetSalesItens(
-    [FromQuery(Name = "_page")] int page = 1,
-    [FromQuery(Name = "_size")] int size = 10,
-    [FromQuery(Name = "_order")] string order = "dataVenda asc, clienteId desc",
-    [FromQuery] DateTime? dataInicial = null,
-    [FromQuery] DateTime? dataFinal = null,
-    CancellationToken cancellationToken = default)
+            [FromQuery(Name = "_page")] int page = 1,
+            [FromQuery(Name = "_size")] int size = 10,
+            [FromQuery(Name = "_order")] string order = "dataVenda asc, clienteId desc",
+            [FromQuery] DateTime? dataInicial = null,
+            [FromQuery] DateTime? dataFinal = null,
+            CancellationToken cancellationToken = default)
         {
-            // Define valores padrão se o chamador não forneceu as datas
+            // Define valores padrão se não forem informados
             dataInicial ??= DateTime.Today.AddDays(-1);
             dataFinal ??= DateTime.Today;
 
-            // Chama o método GetSalesWithProjectionAsync para realizar filtragem, ordenação e paginação
+            // Chama o método de projeção, que já aplica filtragem, ordenação e paginação
             var pagedResult = await _saleRepository.GetSalesWithProjectionAsync(
                 dataInicial.Value,
                 dataFinal.Value,
@@ -162,6 +159,6 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.SalesItem
                 Data = pagedResult
             });
         }
-
     }
 }
+
