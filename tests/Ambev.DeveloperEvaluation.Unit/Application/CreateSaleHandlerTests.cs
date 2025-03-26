@@ -7,6 +7,9 @@ using FluentAssertions;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
 public class CreateSaleHandlerTests
@@ -24,7 +27,7 @@ public class CreateSaleHandlerTests
         _mapper = Substitute.For<IMapper>();
         _logger = Substitute.For<ILogger<CreateSaleCommandHandler>>();
 
-        _handler = new CreateSaleCommandHandler(_saleRepository, _mediator,  _logger);
+        _handler = new CreateSaleCommandHandler(_saleRepository, _mediator, _mapper, _logger);
     }
 
     [Fact]
@@ -32,15 +35,24 @@ public class CreateSaleHandlerTests
     {
         // Arrange
         var command = CreateSaleHandlerTestData.GenerateValidCommand();
-        var sale = new Sale { Id = Guid.NewGuid(), NumeroVenda = command.NumeroVenda, /* ... */ };
-        var result = new CreateSaleResult { Id = sale.Id };
+        // Garante que o campo obrigatório não esteja em branco
+        command.NumeroVenda = "Venda001";
 
-        // Simula mapeamento do comando para a entidade
-        _mapper.Map<Sale>(command).Returns(sale);
-        // Simula mapeamento da entidade para o resultado
-        _mapper.Map<CreateSaleResult>(sale).Returns(result);
+        var sale = new Sale
+        {
+            Id = Guid.NewGuid(),
+            NumeroVenda = command.NumeroVenda
+            // ... outros atributos conforme necessário
+        };
 
-        // Simula persistência no repositório
+        var expectedResult = new CreateSaleResult { Id = sale.Id };
+
+        // Configura o mapeamento do comando para a entidade (aceitando qualquer instância do comando)
+        _mapper.Map<Sale>(Arg.Any<CreateSaleCommand>()).Returns(sale);
+        // Configura o mapeamento da entidade para o resultado para sempre retornar o expectedResult
+        _mapper.Map<CreateSaleResult>(Arg.Any<Sale>()).Returns(expectedResult);
+
+        // Simula a persistência no repositório, retornando a entidade "sale"
         _saleRepository.AddAsync(Arg.Any<Sale>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(sale));
 
@@ -49,11 +61,9 @@ public class CreateSaleHandlerTests
 
         // Assert
         createSaleResult.Should().NotBeNull();
-        createSaleResult.Id.Should().Be(sale.Id);
+        createSaleResult.Id.Should().Be(expectedResult.Id);
 
         await _saleRepository.Received(1)
             .AddAsync(Arg.Any<Sale>(), Arg.Any<CancellationToken>());
     }
-
-    // Outros testes...
 }

@@ -21,10 +21,11 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
         private readonly ILogger<CreateSaleCommandHandler> _logger;
         private readonly IMapper _mapper;
 
-        public CreateSaleCommandHandler(ISaleRepository saleRepository, IMediator mediator, ILogger<CreateSaleCommandHandler> logger)
+        public CreateSaleCommandHandler(ISaleRepository saleRepository, IMediator mediator, IMapper mapper, ILogger<CreateSaleCommandHandler> logger)
         {
             _saleRepository = saleRepository;
             _mediator = mediator;
+            _mapper = mapper;
             _logger = logger ;
         }
 

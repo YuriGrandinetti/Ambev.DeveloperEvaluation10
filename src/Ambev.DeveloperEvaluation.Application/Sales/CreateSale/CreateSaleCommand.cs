@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Ambev.DeveloperEvaluation.Application.Users.CreateUser;
 using Ambev.DeveloperEvaluation.Common.Security;
+using Ambev.DeveloperEvaluation.Domain.Entities;
 using MediatR;
 
 namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
@@ -16,7 +17,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
         public int CustomerId { get; set; }
         public int BranchId { get; set; }
         public decimal ValorTotalVenda { get; set; }
-        public List<CreateSaleItemDto> Itens { get; set; }=new List<CreateSaleItemDto>();
+        public List<SaleItem> Itens { get; set; }=new List<SaleItem>();
 
     }
     public class CreateSaleItemDto
@@ -29,7 +30,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
         public bool Cancelado { get; set; }
         public Guid SaleId { get; set; }
 
-        public required ISale Sale { get; set; }
+   //     public required ISale Sale { get; set; }
 
     }
 }
