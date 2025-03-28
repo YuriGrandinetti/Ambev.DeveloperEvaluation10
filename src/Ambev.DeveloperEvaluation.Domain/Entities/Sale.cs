@@ -36,6 +36,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
             if (item == null)
                 throw new ArgumentNullException(nameof(item));
 
+            Itens.Add(item);
             _itens.Add(item);
             ValorTotalVenda += item.CalcularTotal();
         }

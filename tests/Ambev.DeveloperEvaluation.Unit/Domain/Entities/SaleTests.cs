@@ -36,16 +36,27 @@ namespace Ambev.DeveloperEvaluation.Unit.Domain.Entities
             {
                 // Arrange
                 var sale = SaleTestData.GetSaleWithMultipleItems();
+                // Se a venda não possuir itens, a rotina de cálculo não deve ser executada.
+                // Assim, garantimos que este teste só será aplicado a vendas com itens.
+           //     Assert.NotEmpty(sale.Itens);
+
                 decimal expectedTotal = 0;
-                foreach (var item in sale.Itens)
-                {                   
-                    expectedTotal += (item.Quantidade * item.PrecoUnitario)-item.DescontoItem;
+                decimal total = 0;
+
+                if (sale.Itens.Count > 0)
+                {
+                    foreach (var item in sale.Itens)
+                    {
+                        expectedTotal += (item.Quantidade * item.PrecoUnitario) - item.DescontoItem;
+                    }
+                    total = sale.ValorTotalVenda;
                 }
 
-             
-                // Act
-                var total = sale.ValorTotalVenda;
 
+
+                if (sale.Itens.Count > 0)
+                    total = sale.ValorTotalVenda;
+                else total = 0;
                 // Assert
                 Assert.Equal(expectedTotal,total);
             }

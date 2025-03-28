@@ -58,6 +58,10 @@ public class CreateSaleHandlerTests
 
         // Act
         var createSaleResult = await _handler.Handle(command, CancellationToken.None);
+        // Use um matcher específico:
+        // var createSaleResult = _mapper.Map<CreateSaleResult>(Arg.Is<Sale>(s => s.Id == sale.Id)).Returns(expectedResult);
+       // var createSaleResult = _mapper.Map<CreateSaleResult>(Arg.Any<Sale>()).ReturnsForAnyArgs(expectedResult);
+
 
         // Assert
         createSaleResult.Should().NotBeNull();

@@ -41,15 +41,20 @@ namespace Ambev.DeveloperEvaluation.Unit.Domain.Validation
             public void Deve_Retornar_Erros_Para_Sale_Sem_Items()
             {
                 // Arrange
-                var sale = new Sale(Guid.NewGuid(), DateTime.Now);
+                var sale = new Sale(Guid.NewGuid(), DateTime.Now)
+                {
+                    NumeroVenda = "Venda001", // Garante que o número da venda não está vazio
+                    Itens = null            // Força a venda sem itens (valor nulo)
+                };
                 // Venda sem itens
-
+               
                 // Act
                 var result = validator.Validate(sale);
 
                 // Assert
-                Assert.False(result.IsValid);
-                Assert.Contains(result.Errors, error => error.PropertyName == "Items");
+                Assert.False(result.IsValid, "A venda sem itens deve ser considerada inválida.");
+                // Assert.False(result.IsValid);
+                Assert.Contains(result.Errors, error => error.PropertyName == "Itens");
             }
         }
     }

@@ -19,6 +19,8 @@ namespace Ambev.DeveloperEvaluation.Domain.Validation
 
             RuleFor(sale => sale.NumeroVenda)
                  .NotEmpty().WithMessage("Número da venda não pode estar em branco.");
+            RuleFor(sale => sale.Itens)
+            .NotEmpty().WithMessage("A venda deve conter pelo menos um item.");
 
         }
     }

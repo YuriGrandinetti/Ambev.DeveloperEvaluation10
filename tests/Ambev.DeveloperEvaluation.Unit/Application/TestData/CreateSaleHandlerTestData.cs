@@ -10,10 +10,10 @@ using Bogus;
 
 
 namespace Ambev.DeveloperEvaluation.Unit.TestData
+{
+    public static class CreateSaleHandlerTestData
     {
-        public static class CreateSaleHandlerTestData
-        {
-       // var saleFaker = new Faker<Sale>()
+        // var saleFaker = new Faker<Sale>()
 
         private static readonly Faker<CreateSaleCommand> createSaleHandlerFaker = new Faker<CreateSaleCommand>()
              //.RuleFor(u => u.DataVenda, f => f.Date.Recent())  // Gera uma data recente para a venda
@@ -32,13 +32,13 @@ namespace Ambev.DeveloperEvaluation.Unit.TestData
              .RuleFor(si => si.Quantidade, f => f.Random.Int(1, 10))
              .RuleFor(si => si.SaleId, f => f.Random.Guid())
              .RuleFor(si => si.Cancelado, f => false)
-            // Opcional: calcula o ValorTotalItem com base nas regras do domínio
-            //.RuleFor(si => si.ValorTotalItem, (f, si) => (si.PrecoUnitario * si.Quantidade) - si.DescontoItem)
+             // Opcional: calcula o ValorTotalItem com base nas regras do domínio
+             .RuleFor(si => si.ValorTotalItem, (f, si) => (si.PrecoUnitario * si.Quantidade) - si.DescontoItem)
              .Generate(3)
         );
         public static CreateSaleCommand GenerateValidCommand()
-            {
-                return createSaleHandlerFaker.Generate();
-            }
+        {
+            return createSaleHandlerFaker.Generate();
         }
+    }
 }
