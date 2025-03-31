@@ -16,7 +16,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.UpdateSale
         /// <summary>
         /// Número da venda.
         /// </summary>
-        public string NumeroVenda { get; set; }
+        public string NumeroVenda { get; set; } = string.Empty;
 
         /// <summary>
         /// Data em que a venda foi realizada.

@@ -19,16 +19,16 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
         {
             _context = context;
         }
-        public async Task AddAsync(Sale sale)
+        public async Task AddAsync(Sale sale, CancellationToken cancellationToken = default)
         {
             _context.Pedido.Add(sale);
             await _context.SaveChangesAsync();
         }
 
-        public Task AddAsync(Sale sale, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
+        //public Task AddAsync(Sale sale, CancellationToken cancellationToken = default)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public async Task<IEnumerable<Sale>> GetAllAsync(CancellationToken cancellationToken = default)
         {

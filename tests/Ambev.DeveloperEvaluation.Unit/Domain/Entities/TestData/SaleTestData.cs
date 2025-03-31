@@ -55,6 +55,9 @@ namespace Ambev.DeveloperEvaluation.Unit.Domain.Entities.TestData
                 var saleFaker = new Faker<Sale>()
                     .CustomInstantiator(f => new Sale(Guid.NewGuid(), f.Date.Recent()))
                     .RuleFor(s => s.NumeroVenda, f => $"Test@{f.Random.Number(1000, 9999)}")
+                    .RuleFor(s => s.DataVenda, f => f.Date.Recent())
+                    .RuleFor(s => s.CustomerId, f => f.Random.Int(1, 1000))
+                    .RuleFor(s => s.BranchId, f => f.Random.Int(1, 1000))
                     .FinishWith((f, sale) =>
                     {
                         for (int i = 0; i < 3; i++)

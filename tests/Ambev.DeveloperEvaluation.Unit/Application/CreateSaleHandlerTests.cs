@@ -1,4 +1,5 @@
 ﻿using Ambev.DeveloperEvaluation.Application.Sales.CreateSale;
+using Ambev.DeveloperEvaluation.Common.Security;
 using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using Ambev.DeveloperEvaluation.Unit.TestData;
@@ -34,21 +35,31 @@ public class CreateSaleHandlerTests
     public async Task Handle_ValidRequest_ReturnsSuccessResponseAsync()
     {
         // Arrange
-        var command = CreateSaleHandlerTestData.GenerateValidCommand();
+        var saleId = Guid.NewGuid();
+        var command = CreateSaleHandlerTestData.GenerateValidCommand(saleId);
         // Garante que o campo obrigatório não esteja em branco
         command.NumeroVenda = "Venda001";
 
         var sale = new Sale
         {
-            Id = Guid.NewGuid(),
-            NumeroVenda = command.NumeroVenda
+            Id = saleId,
+            NumeroVenda = command.NumeroVenda,
+            BranchId = command.BranchId,
+            CustomerId = command.CustomerId,
+            DataVenda = command.DataVenda,
+            ValorTotalVenda = command.ValorTotalVenda,
+            Itens= command.Itens
+                       
             // ... outros atributos conforme necessário
         };
 
-        var expectedResult = new CreateSaleResult { Id = sale.Id };
-
+        var expectedResult = new CreateSaleResult
+        {
+            Id = sale.Id,
+        };
+     //   _mapper.Map<User>(command).Returns(user);
         // Configura o mapeamento do comando para a entidade (aceitando qualquer instância do comando)
-        _mapper.Map<Sale>(Arg.Any<CreateSaleCommand>()).Returns(sale);
+        _mapper.Map<Sale>(command).Returns(sale);
         // Configura o mapeamento da entidade para o resultado para sempre retornar o expectedResult
         _mapper.Map<CreateSaleResult>(Arg.Any<Sale>()).Returns(expectedResult);
 
@@ -65,7 +76,7 @@ public class CreateSaleHandlerTests
 
         // Assert
         createSaleResult.Should().NotBeNull();
-        createSaleResult.Id.Should().Be(expectedResult.Id);
+        createSaleResult.Id.Should().Be(sale.Id);
 
         await _saleRepository.Received(1)
             .AddAsync(Arg.Any<Sale>(), Arg.Any<CancellationToken>());

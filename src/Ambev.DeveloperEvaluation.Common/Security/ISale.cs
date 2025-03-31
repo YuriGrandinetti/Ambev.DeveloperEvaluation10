@@ -11,11 +11,11 @@ namespace Ambev.DeveloperEvaluation.Common.Security
         /// <summary>
         /// Obtém o identificador único do Pedido
         /// </summary>
-        public Guid Id { get; set; }
+        public string Id { get; }
         /// <summary>
         /// Obtém o Número de Pedido
         /// </summary>
-        public string NumeroVenda { get; set; }
+        public string NumeroVenda { get;  }
         /// <summary>
         /// Obtém a Data do pedido
         /// </summary>
