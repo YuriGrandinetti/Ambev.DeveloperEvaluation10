@@ -86,4 +86,5 @@ public class UserTests
         Assert.False(result.IsValid);
         Assert.NotEmpty(result.Errors);
     }
+
 }

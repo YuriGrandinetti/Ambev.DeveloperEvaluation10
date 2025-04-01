@@ -11,6 +11,9 @@ namespace Ambev.DeveloperEvaluation.Unit.Domain.Entities
 
     using global::Ambev.DeveloperEvaluation.Domain.Entities;
     using global::Ambev.DeveloperEvaluation.Unit.Domain.Entities.TestData.Ambev.DeveloperEvaluation.Unit.TestData;
+    using Bogus;
+    using global::Ambev.DeveloperEvaluation.Domain.Validation;
+    using global::Ambev.DeveloperEvaluation.Common.Security;
 
     namespace Ambev.DeveloperEvaluation.Unit
     {
@@ -60,7 +63,45 @@ namespace Ambev.DeveloperEvaluation.Unit.Domain.Entities
                 // Assert
                 Assert.Equal(expectedTotal,total);
             }
+
+            [Fact(DisplayName = "A validação deve falhar para dados de pedido e itens inválidos")]
+            public void Deve_Falhar_Validacao_Para_Pedido_E_Itens_Invalidos()
+            {
+                // Arrange
+                // Cria uma venda com dados inválidos utilizando os métodos da classe SaleTestData.
+                // Por exemplo:
+                var sale = new Sale(Guid.NewGuid(), SaleTestData.GenerateInvalidDataVenda())
+                {
+                    NumeroVenda = SaleTestData.GenerateInvalidNumeroVenda(),    // String vazia
+                    CustomerId = SaleTestData.GenerateInvalidCustomerId(),         // 0
+                    BranchId = SaleTestData.GenerateInvalidBranchId(),             // Valor negativo
+                    ValorTotalVenda = SaleTestData.GenerateInvalidValorTotalVenda(),// 0
+                    Itens = new List<SaleItem>()                                   // Inicialmente vazia
+                };
+
+                // Adiciona um item inválido
+                var invalidItem = new SaleItem(Guid.NewGuid(),
+                                               SaleTestData.GenerateInvalidProductId(), // 0
+                                               SaleTestData.GenerateInvalidQuantidade(),  // 0
+                                               SaleTestData.GenerateInvalidPrecoUnitario()  // 0
+                                               );
+                invalidItem.DescontoItem = SaleTestData.GenerateInvalidDescontoItem(); // Valor negativo
+                invalidItem.ValorTotalItem = SaleTestData.GenerateInvalidValorTotalItem(); // 0
+                invalidItem.SaleId = SaleTestData.GenerateInvalidSaleId();                // Guid.Empty
+
+                sale.Itens.Add(invalidItem);
+
+                // Act
+
+                var result = sale.Validate();
+                // Assert
+                Assert.False(result.IsValid);
+                Assert.NotEmpty(result.Errors);
+            }
+
+
         }
-    }
+        
+        }
 
 }
